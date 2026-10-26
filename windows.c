@@ -1,14 +1,15 @@
 #include <windows.h>
+#include "mini_window.h"
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+//mini_window_t *
+void mini_win_open(char *title, uint32_t height, uint32_t width)
 {
 	const char CLASS_NAME[] = "WindowsWindowClass";
 
 	WNDCLASS wc = {
 		.lpfnWndProc = WindowProc,
-		.hInstance = hInstance,
 		.lpszClassName = CLASS_NAME,
 		.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1),
 		.hCursor = LoadCursor(NULL, IDC_ARROW)};
@@ -19,13 +20,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	HWND hwnd = CreateWindowEx(
 		0,
 		CLASS_NAME,
-		"Windows Window",
+		title,
 		WS_OVERLAPPEDWINDOW,
 		100, 100,
-		800, 600,
+		height, width,
 		NULL,
 		NULL,
-		hInstance,
+		NULL,
 		NULL);
 
 	if (hwnd == NULL)
@@ -33,8 +34,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return 0;
 	}
 
-	ShowWindow(hwnd, nCmdShow);
-	UpdateWindow(hwnd);
+	ShowWindow(hwnd, SW_NORMAL);
 
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0) > 0)
@@ -42,9 +42,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-
-	return (int) msg.wParam;
 }
+
+/* int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+	MSG msg;
+	while (GetMessage(&msg, NULL, 0, 0) > 0)
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+
+	return (int)msg.wParam;
+} */
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
